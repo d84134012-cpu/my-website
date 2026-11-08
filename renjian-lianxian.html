@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人間連線中｜AI 生活連結實驗室（原型）</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&display=swap">
+<style>
+:root{--bg:#f0e8d0;--card:#fffaf7;--ink:#3f3a3d;--mut:#6e6569;--line:#dcd0b4;--pri:#5d6f80;--priInk:#fff;--soft:#e3e9de;--warn:#f3e8cf;--warnInk:#6b5a36;--c1:#d4b9b9;--c2:#a8b6c4;--c3:#b8c4b0;--c4:#c2b2c2;--c5:#ecd8aa;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#f0e8d0;--card:#fffaf7;--ink:#3f3a3d;--mut:#6e6569;--line:#dcd0b4;--pri:#5d6f80;--priInk:#fff;--soft:#e3e9de;--warn:#f3e8cf;--warnInk:#6b5a36}}
+:root[data-theme="dark"]{--bg:#f0e8d0;--card:#fffaf7;--ink:#3f3a3d;--mut:#6e6569;--line:#dcd0b4;--pri:#5d6f80;--priInk:#fff;--soft:#e3e9de;--warn:#f3e8cf;--warnInk:#6b5a36}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "Noto Sans TC",system-ui,sans-serif;padding-bottom:84px}
+.wrap{max-width:600px;margin:0 auto;padding:16px}
+h1{font:700 24px/1.3 "Noto Serif TC",serif;margin:8px 0 2px}h2{font:700 18px/1.4 "Noto Serif TC",serif;margin:0 0 8px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:15px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--pg,var(--pri));color:#3f3a3d;border-color:var(--pg,var(--pri));font-weight:700}
+button{font:inherit}.btn{background:var(--pg,var(--pri));color:#3f3a3d;border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--pg,var(--pri))}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+label{display:block;font-weight:500;margin:10px 0 2px}
+input[type=range]{width:100%;accent-color:var(--pg,var(--pri))}
+textarea,input[type=text]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px}
+.row{display:flex;justify-content:space-between;color:var(--mut);font-size:13px}
+.msgs{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;padding:4px 0}
+.m{max-width:86%;padding:9px 12px;border-radius:14px;white-space:pre-wrap}
+.m.ai{background:var(--soft);align-self:flex-start}.m.me{background:var(--pg,var(--pri));color:#3f3a3d;align-self:flex-end}
+.warn{background:var(--warn);color:var(--warnInk);border-radius:10px;padding:10px 12px;font-size:14px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;max-width:150px;background:none;border:0;color:var(--mut);padding:8px 2px;font-size:14px;border-radius:10px;cursor:pointer}
+nav button[aria-current="page"]{color:var(--pri);font-weight:700;background:var(--soft)}
+.path{display:flex;align-items:center;margin:2px 0 10px}.path i{width:14px;height:14px;border-radius:50%;background:var(--line);display:block}.path i.on{background:var(--pri)}.path b{flex:1;height:2px;background:var(--line);display:block}
+.tag{display:inline-block;font-size:13px;color:var(--pri);border:1px solid var(--pri);border-radius:6px;padding:0 8px;margin:0 6px 6px 0}
+.quote{border-left:3px solid var(--pri);padding:4px 10px;margin:8px 0;background:var(--bg);border-radius:0 8px 8px 0}
+.ok{color:var(--pri);font-weight:700}
+.stat{display:flex;gap:10px}.stat div{flex:1;background:var(--bg);border-radius:10px;padding:10px;text-align:center}.stat strong{display:block;font-size:22px}
+nav:empty{display:none}a.lk{color:var(--pri);font-weight:700}#hd h1,#hd .sub{text-align:center}.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:12px 14px;color:#3f3a3d}.bar b{font:700 24px/1.3 "Noto Serif TC",serif;text-align:center}.bar .bk{justify-self:start;background:transparent;color:#3f3a3d;border:1px solid rgba(63,58,61,.4);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:15px}.bar.home{display:block;position:static;padding:22px 14px;text-align:center}.bar.home h1{margin:0 0 6px}.bar.home p{margin:0;font-size:14px;line-height:1.7;color:#4a4448}nav .sub{margin:0 0 0 8px;align-self:center}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.mi{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;justify-content:center;color:#3f3a3d;border:1px solid transparent;border-radius:14px;padding:16px;cursor:pointer;min-height:132px}
+.mi:hover{border-color:var(--pri)}.mi .ic{font-size:28px}.mi b{font-size:17px}.mi small{color:#4a4448;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div class="wrap">
+  <div id="hd"><h1>人間連線中</h1>
+  <p class="sub">AI 是引路人，不是終點。<br>這是可點擊的互動原型，內容與規則都寫在下方 CONFIG，方便你們修改。</p></div>
+  <div id="view"></div>
+</div>
+<nav aria-label="主選單" id="nav"></nav>
+
+<script>
+/* ====== CONFIG：直接改這裡就能調整文案、任務、規則 ====== */
+const WHO={stranger:{n:'友善陌生人',ic:'🌱',d:'拓展連結'},friend:{n:'一般朋友',ic:'🤝',d:'重新活絡'},close:{n:'信任的重要他人',ic:'❤️',d:'深化連結'}};
+const LVL={share:{n:'真實共處',d:'同一空間，不必交談'},interact:{n:'真實互動',d:'互相回應或一起完成事情'},continue:{n:'關係延續',d:'留下再次連結的契機'}};
+const PLACE={indoor:{n:'室內安心起步',t:'選人少、有座位的地方（圖書館、咖啡廳角落），隨時可以離開。'},semi:{n:'半戶外過渡',t:'選有遮蔽的公共空間（騎樓、校園涼亭、書店外座位）。'},outdoor:{n:'戶外生活連結',t:'選白天、人來人往的公共場域，並先看天氣與動線是否友善。'}};
+/* 活動庫。欄位：[名稱, 說明, 邀請/開場句, 適用場域(i室內 s半戶外 o戶外), 免說話且適合低能量(1/0)] */
+const ACTS={
+ stranger:{
+  share:[
+   ['圖書館共讀角','選一個有人共用的長桌，各自做自己的事，坐 20 分鐘。','（不用開口）今天只是想在有人的地方待一下。','i',1],
+   ['涼亭靜靜坐','在校園涼亭或騎樓下坐 10 分鐘，觀察周圍三件小事，不需要與人交談。','（不用開口）今天只想待在人旁邊。','s',1],
+   ['友善共在長椅','前往有活動管理者的友善交流點，選「可以一起坐坐，不一定說話」的小卡，坐 10 分鐘。','（訊號小卡）今天只想一起坐坐，不聊天也沒關係。','o',1]],
+  interact:[
+   ['室內合作小謎題','在圖書館或書店角落，兩人各拿一半線索卡，合作拼出一句話（約 10 分鐘）。','（開場一句）我這張寫著「窗邊」，你那張呢？','i',0],
+   ['社交訊號站','在友善交流點選一張小卡：「願意聊兩句」或「只想一起坐坐」。遇到同樣訊號的人，再決定要不要開口。','（開場一句）你也是來這裡坐一下的嗎？','so',0],
+   ['雙人線索尋寶','AI 分別給兩位自願者不同線索，兩人不必自我介紹，合作找到一個校園景點（約 10 分鐘）。','（開場一句）我手上的線索是「有水的地方」，你的是什麼呢？','o',0],
+   ['幫我完成一件小事','低風險互助，例如一起辨識一種植物、推薦附近適合散步的路線。','（開場一句）你知道這是什麼植物嗎？','so',0]],
+  continue:[
+   ['我們的下一次','活動結束後，雙方各自私下選擇下一步，對方不會知道你沒選哪個。','選項：想再一起做一次／保持偶爾交流／今天這樣就很好。','iso',1],
+   ['微公益再碰面','一起參加 30 分鐘的植物照顧或環境整理，之後再決定要不要再見面。','（開場一句）你也是第一次來嗎？','so',0]]},
+ friend:{
+  share:[
+   ['各做各的一起待著','約朋友在咖啡廳或圖書館，各做各的事 30 分鐘，不一定要聊天。','我今天想有人陪著讀書，你要不要一起？各做各的就好。','i',1],
+   ['並肩散步 15 分鐘','不必坐下談心。先各自觀察沿途三件事，想分享再分享，也可以全程不說話。','最近有點悶，想出去走 15 分鐘，你要不要一起？不用聊什麼。','so',1],
+   ['外面坐坐吃點東西','買個點心，在公園或校園長椅坐 20 分鐘，想聊就聊。','我買了點心，想去外面坐坐，你有空一起嗎？','o',1]],
+  interact:[
+   ['看到好笑的就轉給你','先在線上轉一個好笑或好看的東西，對方回了，再約一個小見面。','看到這個，覺得你會喜歡。','i',1],
+   ['一起做一件小事','約朋友一起煮一餐、整理一個角落或逛書店，用「做事」代替「談心」。','這週想不想一起去逛書店？','io',0],
+   ['我們上次一起……','選一位久未聯絡的朋友，用共同回憶設計邀約：重訪當年某個地方。','我剛經過我們以前常去的那個地方，突然想到你。這週有空一起再去走走嗎？','so',0]],
+  continue:[
+   ['把下次約好','結束前各提一個「下次想做的小事」，不需要馬上決定日期。','今天很開心，下次想不想換我們去＿＿？','iso',0],
+   ['固定小約定','約好每個月一次的小聚（散步或吃飯），不必很正式。','我們要不要每個月固定找一天出來走走？','iso',0]]},
+ close:{
+  share:[
+   ['在家一起待著','邀請家人或朋友在同一個空間各做各的事，不需要聊天。','今天可以在你旁邊待一下嗎？我不會吵你。','i',1],
+   ['不用說心事的陪伴邀請','想被陪伴又不想解釋時，用具體、短時間的邀請，對方可接受、改期或婉拒。','今天心情有點悶，不用問我怎麼了，可以陪我走 15 分鐘嗎？','so',1],
+   ['一起吃一頓飯','選一個舒服的地方一起吃飯，不談重要的事，先在一起。','晚點一起吃飯好嗎？不用聊什麼。','io',1]],
+  interact:[
+   ['說出一個小需求','AI 協助把「我需要什麼」寫成一句具體請求（時間、方式、界線）。','我最近需要有人聽我說 10 分鐘，不需要建議。你這週哪天方便？不方便也沒關係。','i',0],
+   ['散步時說一件小事','邊走邊說一件最近的小事，不必說很深，對方只要聽。','我們散步時，我想跟你說一件最近的小事，可以嗎？','so',0]],
+  continue:[
+   ['道謝一次','寫下或說出一件對方最近讓你覺得被支持的小事。','前陣子你＿＿，我其實很感謝。','iso',1],
+   ['一起訂固定小儀式','每週一次、15 分鐘，兩人共同決定做什麼，讓關係有可預期的接觸點。','我們要不要每週固定一天，一起做一件小事？','iso',0]]}
+};
+const GIVE=[
+ {id:1,t:'替匿名共在空間的一則留言，回一句鼓勵'},
+ {id:2,t:'寫一張給陌生人的小卡，放進友善交流點',link:{t:'查看友善交流點',u:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('國立成功大學 光復校區')}}, /* 示意：之後把 query 換成真正的友善交流點地址 */
+ {id:3,t:'看到好笑或好看的東西，順手轉給一位朋友（不用多說，也不用等回覆）'},
+ {id:4,t:'幫忙想一句明信片上的話'}];
+const NOTES=['今天考試很累，只想有人知道我還在。','第一次不靠 AI，自己走去超商了。','好像沒什麼事，但今天有點孤單。'];
+const REPLIES=['我聽到了。這種感覺有時來得很突然，在這裡都是被允許的。','謝謝你願意說出來。你想繼續聊，還是只想安靜地待一下？','嗯，我在。你說的這些，一點都不奇怪。','聽起來你已經撐了一陣子。這一刻你最需要的是什麼？'];
+const NUDGE='今天已經說了不少。要不要往前走一小步？去「設計連結」看看今天適合和誰、做什麼。';
+const RISK=/想死|自殺|不想活|傷害自己|結束生命|自殘/;
+const SAFETY='我很在意你現在的安全。這部分需要真人陪伴你。\n台灣可以撥：1925 安心專線、1980 張老師、1995 生命線；若有立即危險請撥 110 或 119。也建議聯絡校內諮商中心，或現在找一位信任的人陪你。';
+/* ====== 狀態與工具 ====== */
+const S={tab:'home',who:'stranger',lvl:'share',place:'outdoor',energy:5,cur:null,
+ chat:[{r:'ai',t:'我在這裡。你現在想聊聊，還是只想安靜陪著？'}],userCount:0,done:{},mine:[],log:[]};
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TABS=[['chat','聊聊'],['design','設計連結'],['give','接住他人'],['log','我的軌跡']];
+/* 首頁功能選單：改這裡就能調整按鈕名稱、說明與順序 */
+const MENU=[{k:'chat',ic:'💬',n:'聊聊',d:'先被接住：想說就說，不想說就安靜陪著'},{k:'design',ic:'🧭',n:'設計連結',d:'選對象、互動程度與場域，AI 幫你設計今天的小任務'},{k:'give',ic:'🌿',n:'接住他人',d:'有餘力時，為別人留下一點善意'},{k:'log',ic:'📒',n:'我的軌跡',d:'記錄每次嘗試，看見自己的連結感'}];
+function go(t){S.tab=t;draw();window.scrollTo(0,0)}
+function set(k,v){S[k]=v;S.cur=null;S.idx=0;draw()}
+function path(){const k=Object.keys(WHO);return '<div class="path" aria-hidden="true">'+k.map((x,i)=>(i?'<b></b>':'')+'<i class="'+(S.who===x?'on':'')+'"></i>').join('')+'</div>'}
+function chips(key,obj){return '<div class="chips">'+Object.keys(obj).map(k=>'<button class="chip" aria-pressed="'+(S[key]===k)+'" onclick="set(\''+key+'\',\''+k+'\')">'+(obj[k].ic?obj[k].ic+' ':'')+obj[k].n+'</button>').join('')+'</div>'}
+/* ====== 畫面 ====== */
+function vHome(){
+ return '<div style="text-align:center;margin:20px 0 4px"><h2>今天想從哪裡開始？</h2><p class="sub" style="margin:0">不用做很多，選一個入口就好。想走多遠，都由你決定。</p></div>'+
+ '<div class="menu">'+MENU.map((m,i)=>'<button class="mi" style="background:var(--c'+(i+1)+')" onclick="go(\''+m.k+'\')"><span class="ic" aria-hidden="true">'+m.ic+'</span><b>'+m.n+'</b><small>'+m.d+'</small></button>').join('')+'</div>'}
+function vChat(){
+ return '<div class="card"><h2>被接住</h2><p class="sub">先說說今天。這裡不評價、不診斷；真正的產品會接上大型語言模型 API。</p><div class="msgs" id="msgs" aria-live="polite">'+
+ S.chat.map(m=>'<div class="m '+m.r+'">'+esc(m.t)+'</div>').join('')+'</div>'+
+ '<div style="display:flex;gap:8px;margin-top:10px"><input type="text" id="ci" placeholder="想說什麼都可以" onkeydown="if(event.key===\'Enter\')send()"><button class="btn" onclick="send()">送出</button></div>'+
+ '<p class="sub" style="margin-top:10px">不想打字也可以：<button class="chip" onclick="go(\'design\')">直接去設計今天的連結</button></p></div>'+
+ '<div class="warn">原型提醒：這裡的回應是預先寫好的範例句。自傷關鍵字會觸發真人轉介（試試輸入「我不想活了」）。</div>'}
+function send(){const el=$('#ci');const v=el.value.trim();if(!v)return;S.chat.push({r:'me',t:v});S.userCount++;
+ let r;if(RISK.test(v))r=SAFETY;else if(S.userCount%4===0)r=NUDGE;else r=REPLIES[(S.userCount-1)%REPLIES.length];
+ S.chat.push({r:'ai',t:r});draw();const m=$('#msgs');if(m)m.scrollTop=m.scrollHeight}
+function vDesign(){
+ const low=S.energy<=3;
+ let h='<div class="card"><h2>今天想和誰連結？</h2>'+chips('who',WHO)+
+ '<p class="sub">三類對象是不同的資源，不是由低到高的關卡。有時對陌生人說聲謝謝，比向家人示弱更容易。</p></div>'+
+ '<div class="card"><h2>今天願意走到哪一步？</h2>'+chips('lvl',LVL)+'<p class="sub">'+LVL[S.lvl].d+'</p>'+
+ '<h2 style="margin-top:12px">在哪裡發生？</h2>'+chips('place',PLACE)+
+ '<label for="en">社交能量：<span class="ok">'+S.energy+'</span> / 10</label><input id="en" type="range" min="1" max="10" value="'+S.energy+'" oninput="S.energy=+this.value;S.cur=null;draw(\'en\')">'+
+ '<div class="row"><span>只想躲起來</span><span>想多認識人</span></div>'+
+ (low?'<p class="sub ok">能量偏低：建議先選「真實共處」加「室內」，只做一小步也算數。</p>':'')+
+ '<p style="margin:12px 0 0"><button class="btn" onclick="make()">請 AI 設計今天的連結</button></p></div>';
+ if(S.cur){const c=S.cur;h+='<div class="card"><span class="tag">'+WHO[S.who].n+'</span><span class="tag">'+LVL[S.lvl].n+'</span><span class="tag">'+PLACE[S.place].n+'</span><h2>'+esc(c.t)+'</h2><p>'+esc(c.d)+'</p><p class="sub">'+esc(PLACE[S.place].t)+'</p>'+
+ '<div class="quote">'+esc(c.inv)+'</div>'+(c.note?'<p class="sub ok">'+esc(c.note)+'</p>':'')+
+ '<p class="sub">所有參與者都能拒絕、取消、提前離開。不需要定位追蹤或拍照證明。</p>'+
+ '<button class="btn" onclick="S.tab=\'log\';draw()">做完了，去記錄</button> '+(c.n>1?'<button class="btn ghost" onclick="make(1)">換一個（'+(c.i+1)+'/'+c.n+'）</button>':'<span class="sub">這組條件只有一個活動，可以換個場域或互動程度看看。</span>')+'</div>'}
+ return h}
+function make(next){S.idx=next?(S.idx||0)+1:0;const k={indoor:'i',semi:'s',outdoor:'o'}[S.place],cell=ACTS[S.who][S.lvl];let a=cell.filter(x=>x[3].includes(k)),note='';
+ if(!a.length){a=cell;note='這個組合在所選場域沒有現成活動，先顯示其他場域的建議。'}
+ if(S.energy<=3){const q=a.filter(x=>x[4]);if(q.length)a=q;else if(!note)note='能量偏低，這個組合的活動都需要互動，可以改選「真實共處」。'}
+ const i=S.idx%a.length,x=a[i];S.cur={t:x[0],d:x[1],inv:x[2],note:note,n:a.length,i:i};draw()}
+function vGive(){
+ return '<div class="card"><h2>也試試接住別人</h2><p class="sub">從「我需要被接住」到「我也有能力給一點東西」。只在你有餘力時做，沒有任何一項是必須的。</p>'+
+ GIVE.map(g=>'<div><label style="display:flex;gap:10px;align-items:flex-start;font-weight:400"><input type="checkbox" '+(S.done[g.id]?'checked':'')+' onchange="S.done[\''+g.id+'\']=this.checked;draw()"> '+esc(g.t)+'</label>'+(g.link?'<div style="margin:0 0 8px 28px"><a class="lk" href="'+g.link.u+'" target="_blank" rel="noopener">📍 '+esc(g.link.t)+'（Google 地圖）</a><div class="sub" style="margin:0">目前是示意地點，友善交流點確定後再換成實際位置。</div></div>':'')+'</div>').join('')+
+ '<p class="ok">今天你已經接住 '+Object.values(S.done).filter(Boolean).length+' 件。</p></div>'+
+ '<div class="card"><h2>匿名小卡牆</h2><p class="sub">以下為範例內容。回應時不需要給建議或解決問題，只要讓對方知道你看見了。對方只會看到匿名的回應數量，無法追問或私訊。</p>'+
+ (S.warn?'<div class="warn">'+esc(S.warn)+'</div>':'')+NOTES.map((n,i)=>'<div class="quote">'+esc(n)+'<div class="sub" style="margin:4px 0">已有 '+(SEED[i]+(S.rep[i]||[]).length)+' 位匿名的人回應</div><div class="chips">'+RESP.map(r=>'<button class="chip" onclick="respond('+i+',\''+r+'\')">'+r+'</button>').join('')+'</div><div style="display:flex;gap:6px"><input type="text" id="rn'+i+'" maxlength="30" placeholder="想多說一句也可以（30 字內，選填）"><button class="btn" onclick="respondTxt('+i+')">送出</button></div></div>').join('')+
+ '<label for="gn">也寫一張自己的小卡</label><input type="text" id="gn" placeholder="例如：你今天有走出來，很棒。">'+
+ '<p style="margin:8px 0 0"><button class="btn" onclick="addMine()">留下</button></p>'+
+ '</div>'+myCards()+
+ '<div class="warn">界線設計：若對方的內容涉及自傷或危機，你不需要自己處理，系統會提供真人轉介資源。</div>'}
+const RESP=['我看見你了','謝謝你說出來','我也有過這種感覺','今天辛苦了'];const SEED=[2,5,1];S.rep={};S.dv={};S.warn='';
+function respond(i,t){S.warn='';(S.rep[i]=S.rep[i]||[]).push(t);S.done[1]=true;draw()}
+function respondTxt(i){const v=$('#rn'+i).value.trim();if(!v)return;
+ if(RISK.test(v)){S.warn='這類內容需要真人協助，不適合用一般回應。請改用預設回應語；系統會讓對方看到轉介資源。';draw();return}
+ if(/https?:|www\.|@|\d{8,}/i.test(v)){S.warn='為了保護彼此，回應中不能放連結或聯絡方式。';draw();return}
+ respond(i,v)}
+const SAMPLE_LINES=['先去吃點熱的東西吧','你有走出來，真的很棒','我懂這種累','今天辛苦了，晚點早點休息'];
+function deliver(){S.mine.forEach((m,i)=>{if(!S.dv[i]){const n=2+Math.floor(Math.random()*3),items=[];for(let k=0;k<n;k++)items.push(Math.random()<0.6?RESP[Math.floor(Math.random()*RESP.length)]:SAMPLE_LINES[Math.floor(Math.random()*SAMPLE_LINES.length)]);S.dv[i]={items:items,rate:null,next:''}}});draw()}
+function rate(i,x){S.dv[i].rate=+$('#rt'+i).value;S.dv[i].next=x;if(x==='想找人聊聊')S.tab='chat';draw()}
+function myCards(){
+ if(!S.mine.length)return '';
+ const pending=S.mine.some((m,i)=>!S.dv[i]);
+ let h='<div style="text-align:center;margin:16px 0 6px"><h2>我的小卡</h2><p class="sub">回應會在每天早上 8:00 一次送達，不用一直來看。</p></div>';
+ h+=S.mine.map((m,i)=>{const d=S.dv[i];let b='<div class="quote">'+esc(m)+'</div>';
+  if(!d)return '<div class="card">'+b+'<p class="sub" style="margin:0">小卡還在牆上，今天不需要等回應。</p></div>';
+  const cnt={},lines=[];d.items.forEach(x=>{if(RISK.test(x))return;if(RESP.includes(x))cnt[x]=(cnt[x]||0)+1;else lines.push(x)});
+  b+='<p><b>有 '+d.items.length+' 位匿名的人回應了你</b></p><div class="chips">'+Object.keys(cnt).map(k=>'<span class="tag">'+esc(k)+' ×'+cnt[k]+'</span>').join('')+'</div>'+lines.map(x=>'<div class="quote">'+esc(x)+'</div>').join('');
+  if(d.rate===null)b+='<label for="rt'+i+'">讀到這些，你有感覺被看見嗎：<span id="rtv'+i+'">3</span> / 5</label><input type="range" id="rt'+i+'" min="1" max="5" value="3" oninput="$(\'#rtv'+i+'\').textContent=this.value"><div class="chips">'+['想為別人留一句','今天這樣就很好','想找人聊聊'].map(x=>'<button class="chip" onclick="rate('+i+',\''+x+'\')">'+x+'</button>').join('')+'</div>';
+  else b+='<p class="ok" style="margin:0">已記下：被看見 '+d.rate+' / 5，下一步「'+esc(d.next)+'」。</p>';
+  return '<div class="card">'+b+'</div>'}).join('');
+ if(pending)h+='<p style="text-align:center"><button class="btn ghost" onclick="deliver()">模擬：明天早上 8:00 回應送達</button></p><p class="sub" style="text-align:center">（原型示範用，正式版由系統在固定時間發送）</p>';
+ return h}
+function addMine(){const v=$('#gn').value.trim();if(!v)return;S.mine.push(v);S.done[2]=true;draw()}
+function vLog(){
+ const n=S.log.length,avg=n?(S.log.reduce((s,x)=>s+x.u+x.r,0)/(2*n)).toFixed(1):'—';
+ const t=S.cur?S.cur.t:'';
+ return '<div class="card"><h2>記錄今天的嘗試</h2><p class="sub">不管做到哪一步都算。重點是這次有沒有「感覺連結」，不是做了幾件事。</p>'+
+ '<label for="lt">今天試了什麼</label><input type="text" id="lt" value="'+esc(t)+'" placeholder="例如：和朋友散步 15 分鐘（穿好鞋子也算）">'+
+ '<label for="b4">出發前心情：<span id="b4v">5</span></label><input type="range" id="b4" min="1" max="10" value="5" oninput="$(\'#b4v\').textContent=this.value">'+
+ '<label for="af">結束後心情：<span id="afv">5</span></label><input type="range" id="af" min="1" max="10" value="5" oninput="$(\'#afv\').textContent=this.value">'+
+ '<label for="ru">我有感覺被理解／被看見：<span id="ruv">3</span> / 5</label><input type="range" id="ru" min="1" max="5" value="3" oninput="$(\'#ruv\').textContent=this.value">'+
+ '<label for="rr">對方有回應到我：<span id="rrv">3</span> / 5（獨自完成請照實選）</label><input type="range" id="rr" min="1" max="5" value="3" oninput="$(\'#rrv\').textContent=this.value">'+
+ '<label for="nx">下次想怎麼做</label><div class="chips" id="nx">'+['想再做一次','保持偶爾交流','今天這樣就很好'].map((x,i)=>'<button class="chip" aria-pressed="'+(i==0)+'" onclick="pickNx(this)">'+x+'</button>').join('')+'</div>'+
+ '<label for="nt">我的發現</label><textarea id="nt" rows="2"></textarea>'+
+ '<p style="margin:10px 0 0"><button class="btn" onclick="saveLog()">存成回憶卡片</button></p></div>'+
+ '<div class="card"><h2>社交量 vs. 連結感</h2><div class="stat"><div><strong>'+n+'</strong>嘗試次數</div><div><strong>'+avg+'</strong>平均連結感（1–5）</div></div>'+
+ '<p class="sub">成功標準不是次數越多越好，而是自願、有意義、有回應的連結變多。</p>'+
+ (n?S.log.map(x=>'<div class="card" style="margin:8px 0"><b>'+esc(x.t||'今天的嘗試')+'</b><div class="sub">心情 '+x.b+' → '+x.a+'｜被理解 '+x.u+'／回應 '+x.r+'｜'+esc(x.nx)+(x.nt?'<br>發現：'+esc(x.nt):'')+'</div></div>').join(''):'<p class="sub">還沒有記錄。第一張卡片等你。</p>')+'</div>'}
+function pickNx(b){[...b.parentNode.children].forEach(c=>c.setAttribute('aria-pressed',c===b))}
+function saveLog(){const nx=document.querySelector('#nx [aria-pressed="true"]');
+ S.log.unshift({t:$('#lt').value.trim(),b:+$('#b4').value,a:+$('#af').value,u:+$('#ru').value,r:+$('#rr').value,nx:nx?nx.textContent:'',nt:$('#nt').value.trim()});S.cur=null;draw()}
+function draw(keep){
+ const HB='<div class="bar home" style="background:var(--c5)"><h1>人間連線中</h1><p>AI 是引路人，不是終點。<br>這是可點擊的互動原型，內容與規則都寫在下方 CONFIG，方便你們修改。</p></div>';const bi=MENU.findIndex(m=>m.k===S.tab);$('#bar').innerHTML=bi<0?HB:'<div class="bar" style="background:var(--c'+(bi+1)+')"><button class="bk" onclick="go(\'home\')">← 首頁</button><b>'+MENU[bi].n+'</b><span></span></div>';$('#hd').style.display='none';document.documentElement.style.setProperty('--pg','var(--c'+(bi<0?5:bi+1)+')');
+ $('#view').innerHTML=({home:vHome,chat:vChat,design:vDesign,give:vGive,log:vLog})[S.tab]();
+ if(keep){const e=document.getElementById(keep);if(e)e.focus()}
+ const m=$('#msgs');if(m)m.scrollTop=m.scrollHeight}
+draw();
+</script>
+</body>
+</html>
